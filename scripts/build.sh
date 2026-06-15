@@ -1,4 +1,6 @@
 #!/bin/bash
+export JAVA_HOME=/usr/local/jdk_1.8   # 请确认路径
+export PATH=$JAVA_HOME/bin:$PATH
 set -e
 
 echo "========== Maven Build Start =========="
