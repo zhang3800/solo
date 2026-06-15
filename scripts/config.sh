@@ -5,4 +5,4 @@ export PROJECT="solo"
 export HARBOR="harbor.zrh.com/solo"
 export IMAGE_REPO="${HARBOR}/dev/${APP_NAME}"
 
-export MVN_CMD="mvn clean install -DskipTests -U"
+export MVN_CMD="mvn clean install -Dmaven.test.skip=true -U"
