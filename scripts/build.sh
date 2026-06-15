@@ -4,12 +4,22 @@ set -e
 echo "========== Maven Build Start =========="
 
 rm -rf target
-${MVN_CMD}
 
-JAR_FILE=$(ls target/*.jar | head -n 1)
+# 确保 MVN_CMD 存在
+if [ -z "$MVN_CMD" ]; then
+  echo "❌ MVN_CMD 未定义"
+  exit 1
+fi
 
-if [[ ! -f "$JAR_FILE" ]]; then
-  echo "❌ JAR构建失败"
+echo "使用命令: $MVN_CMD"
+$MVN_CMD
+
+# 查找 jar（兼容多模块）
+JAR_FILE=$(find . -type f -name "*.jar" | grep target | head -n 1)
+
+if [ -z "$JAR_FILE" ]; then
+  echo "❌ 没有生成 jar 包"
+  find . -name "*.jar"
   exit 1
 fi
 
