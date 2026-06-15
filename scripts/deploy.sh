@@ -3,7 +3,7 @@ set -e
 
 source image.env   # 假设该文件定义了 IMAGE 变量
 
-NAMESPACE="solo-dev"        # 你的命名空间
+NAMESPACE="dev"        # 你的命名空间
 DEPLOYMENT="solo"           # 你的 Deployment 名称
 CONTAINER="solo"            # 容器名称（可能与 deployment 同名）
 
