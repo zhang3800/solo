@@ -16,16 +16,32 @@ if [ -z "$PRODUCT_FILE" ]; then
     exit 1
 fi
 
-cp "$PRODUCT_FILE" app.${PRODUCT_FILE##*.}   # 保持原后缀
-
-# 根据后缀决定 Dockerfile
 EXT=${PRODUCT_FILE##*.}
-cat > Dockerfile <<EOF
+cp "$PRODUCT_FILE" "app.${EXT}"
+
+# 根据后缀生成 Dockerfile
+if [ "$EXT" = "jar" ]; then
+    cat > Dockerfile <<EOF
 FROM 192.168.10.14/jdk/jdk:jdk1.8.0_192
 WORKDIR /app
-COPY app.${EXT} app.${EXT}
-ENTRYPOINT ["java","-jar","/app/app.${EXT}"]
+COPY app.jar app.jar
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 EOF
+elif [ "$EXT" = "war" ]; then
+    # 使用 Tomcat 9 + JDK 8 镜像（可改为你的私有 Tomcat 镜像）
+    cat > Dockerfile <<EOF
+FROM tomcat:9.0-jdk8-openjdk
+# 删除默认的 ROOT 应用
+RUN rm -rf /usr/local/tomcat/webapps/ROOT
+# 将 war 包复制为 ROOT.war（根路径访问）
+COPY app.war /usr/local/tomcat/webapps/ROOT.war
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+EOF
+else
+    echo "❌ 不支持的文件类型: $EXT"
+    exit 1
+fi
 
 docker build -t $IMAGE .
 docker push $IMAGE
