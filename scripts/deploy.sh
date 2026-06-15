@@ -1,14 +1,16 @@
 #!/bin/bash
 set -e
 
-source image.env
+source image.env   # 假设该文件定义了 IMAGE 变量
 
-echo "========== Deploy To Rancher =========="
+NAMESPACE="solo-dev"        # 你的命名空间
+DEPLOYMENT="solo"           # 你的 Deployment 名称
+CONTAINER="solo"            # 容器名称（可能与 deployment 同名）
 
-rancherRedeploy \
-  alwaysPull: true \
-  credential: 'rke6' \
-  images: "${IMAGE}" \
-  workload: "/project/c-m-9nkxs2hn/workload/deployment:solo-dev:solo"
+echo "========== Deploy To K8s =========="
+echo "Updating deployment ${DEPLOYMENT} in namespace ${NAMESPACE} with image: ${IMAGE}"
+
+kubectl set image deployment/${DEPLOYMENT} ${CONTAINER}=${IMAGE} -n ${NAMESPACE} --record
+kubectl rollout status deployment/${DEPLOYMENT} -n ${NAMESPACE}
 
 echo "✅ Deploy Success"
