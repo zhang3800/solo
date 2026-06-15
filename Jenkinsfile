@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'quality' }
+    agent any
 
     parameters {
         string(name: 'BRANCH', defaultValue: 'main')
