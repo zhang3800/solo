@@ -22,19 +22,28 @@ pipeline {
 
         stage('Maven构建') {
             steps {
-                sh "bash scripts/build.sh"
+                sh """
+                    source scripts/config.sh
+                    bash scripts/build.sh
+                """
             }
         }
 
         stage('构建镜像') {
             steps {
-                sh "bash scripts/docker.sh ${params.TAG}"
+                sh """
+                    source scripts/config.sh
+                    bash scripts/docker.sh ${params.TAG}
+                """
             }
         }
 
         stage('部署') {
             steps {
-                sh "bash scripts/deploy.sh"
+                sh """
+                    source scripts/config.sh
+                    bash scripts/deploy.sh
+                """
             }
         }
     }
