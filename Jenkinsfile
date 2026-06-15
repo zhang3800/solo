@@ -12,9 +12,14 @@ pipeline {
 
     stages {
 
-        stage('拉代码') {
+        stage('清理工作空间') {
             steps {
                 deleteDir()
+            }
+        }
+
+        stage('拉代码') {
+            steps {
                 git branch: "${params.BRANCH}",
                     url: "${APP_GIT}"
             }
@@ -23,7 +28,7 @@ pipeline {
         stage('Maven构建') {
             steps {
                 sh """
-                    source scripts/config.sh
+                    . scripts/config.sh
                     bash scripts/build.sh
                 """
             }
@@ -32,7 +37,7 @@ pipeline {
         stage('构建镜像') {
             steps {
                 sh """
-                    source scripts/config.sh
+                    . scripts/config.sh
                     bash scripts/docker.sh ${params.TAG}
                 """
             }
@@ -41,7 +46,7 @@ pipeline {
         stage('部署') {
             steps {
                 sh """
-                    source scripts/config.sh
+                    . scripts/config.sh
                     bash scripts/deploy.sh
                 """
             }
